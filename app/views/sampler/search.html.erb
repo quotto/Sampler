@@ -1,0 +1,59 @@
+<%= render 'header' %>
+<div class="container" id="container">
+  <%= render 'search_form' %>
+  <div id="videoCarousel" class="carousel slide">
+    <div class="carousel-inner">
+      <% item_number = 0 %>
+      <% @movies.each  do |movie| %>
+        <% if item_number == 0%>
+          <div class="item active">
+        <% else %>
+          <div class="item"> 
+        <% end %>
+            <object width="560" scrolling="no" height="400" frameborder="0" style="border:none;" border="0" type="text/html" data="http://www.dmm.co.jp/litevideo/-/part/=/cid=<%= movie.dmm_id %>/size=560_360"></object>
+          </div>
+        <% item_number = item_number + 1 %>
+        <% end %>
+    </div>
+    <a class="left carousel-control" href="#videoCarousel" data-slide="prev"><span class="glyphicon glyphicon-step-backward"></span></a>
+    <a class="right carousel-control" href="#videoCarousel" data-slide="next"><span class="glyphicon glyphicon-step-forward"></span></a>
+  </div>
+  <div id="selectorCarousel" class="carousel slide">
+    <div class="carousel-inner">
+  <% selector_number = 0
+     row_number = 0 
+     item_number = 0
+     total_number = 0 %>
+    <% @movies.each  do |movie| %>
+    <% if item_number == 0 %>
+      <% if selector_number == 0 %>
+        <div class="selector item active">
+          <div class="selector_row">
+      <% else %>
+        <div class="selector item">
+          <div class="selector_row">
+      <% end %>
+    <% end %>
+            <div class="selector_item"><img alt="<%= movie.title%>" src="<%= movie.thumbnail %>" data-target="#videoCarousel" data-slide-to="<%= total_number %>" data-toggle="tooltip" data-original-title="<%= movie.title %>" rel="thumbnail"></img></div>
+    <% item_number = item_number + 1 %>
+    <% total_number = total_number + 1 %>
+    <% if item_number == 10 %>
+      <%# selector_rowを閉じる %>
+          </div>
+      <%# selector divを閉じる %>
+        </div>
+      <% selector_number = selector_number + 1
+         row_number = 0
+         item_number = 0 %>
+    <% end %>
+    <% end %>
+    <% if item_number > 0 && item_number < 10 %>
+          </div>
+        </div>
+    <% end %>
+    </div>
+    <a class="left carousel-control" href="#selectorCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+    <a class="right carousel-control" href="#selectorCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+  </div>
+</div>
+<%= render 'footer' %>

@@ -1,0 +1,101 @@
+@font-face {
+  font-family: 'Glyphicons Halflings Sampler';
+  src: url('./fonts/glyphicons-halflings-regular.eot');
+  src: url('./fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('./fonts/glyphicons-halflings-regular.woff') format('woff'), url('./fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('./fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
+}
+
+.glyphicon {
+    font-family: 'Glyphicons Halflings Sampler';
+}
+
+.small{
+    color:white;
+    font-size:60%;
+}
+
+#searchform {
+    margin-bottom:10px;
+}
+
+#query {
+    visibility:hidden;
+}
+
+div.selector_row {
+    display:table;
+    margin:0;
+    position:relative;
+    left:10%;
+}
+
+div.selector_item {
+    display:table-cell;
+    text-align:center;
+    vertical-align:middle;
+    width:90px;
+    height:120px;
+}
+div.selector_item > img {
+    width:80px;
+    height:110px;
+    cursor:pointer;
+}
+
+div.row-active {
+    visibility:visible;
+}
+
+div.item {
+    text-align:center;
+}
+
+.glyphicon-step-backward,
+.glyphicon-step-forward {
+    display: inline-block;
+    position:absolute;
+    top: 40%;
+    z-index: 5;
+}
+
+.glyphicon-step-backward {
+    left:50%;
+}
+
+.glyphicon-step-forward {
+    right:50%;
+}
+
+#videoCarousel > .carousel-control {
+    color:#000000;
+    opacity:0.9;
+    background-image:none;
+    width:10%;
+}
+#videoCarousel > .left {
+    left:15%;
+}
+#videoCarousel > .right {
+    right:15%;
+}
+
+#videoCarousel > .carousel-control:hover,
+#videoCarousel > .carousel-control:focus
+{
+    color:#000000;
+}
+
+#selectorCarousel > .carousel-control {
+    width:10%;
+}
+
+.tooltip {
+    position:fixed;
+}
+
+#refresh {
+    position:relative;
+}
+
+div.errmessage {
+    text-align:center;
+}

@@ -1,0 +1,7 @@
+<form id="searchform" role="form" class="form-inline" action="/sampler/search" method="post" style="text-align:center">
+  <div class="form-group">
+    <label class="sr-only" for="inputFormKeyword">Enter keyword</label>
+    <input id="inputFormKeyword" type="text" class="form-control input-sm" name="keyword" placeholder="検索ワードを入力" value="<%= @query %>">
+  </div>
+  <button type="submit" class="btn btn-default btn-sm">検索</button>
+</form>

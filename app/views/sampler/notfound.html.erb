@@ -1,0 +1,6 @@
+<%= render 'header' %>
+<div class="container" id="container">
+  <%= render 'search_form' %>
+  <div id="query"><%= @query %></div>
+  <div class="errmessage"><strong>&quot;<%= @query %>&quot;</strong>に一致する動画は見つかりませんでした。</div>
+</div>
