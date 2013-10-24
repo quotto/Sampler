@@ -99,3 +99,13 @@ div.item {
 div.errmessage {
     text-align:center;
 }
+
+div.refresh {
+  text-align:right;
+  margin-bottom:10px;
+}
+
+#refreshLink {
+  position:relative;
+  left:-10%;
+}
