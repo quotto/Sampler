@@ -14,4 +14,3 @@
 /log/*.log
 /tmp
 /vendor/bundle
-/Gemfile.lock

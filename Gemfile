@@ -40,3 +40,6 @@ gem 'mysql2'
 gem 'nokogiri'
 gem 'rmagick'
 gem 'therubyracer'
+group :development do
+	gem 'capistrano'
+end

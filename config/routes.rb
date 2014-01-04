@@ -58,6 +58,7 @@ Sampler::Application.routes.draw do
   root :to => 'sampler#index'
     resources :sampler do
 		get 'index', :on => :collection
+		get 'search', :on => :collection
 		post 'search',:on => :collection
 		post 'refresh',:on => :collection
 		get 'refresh',:on => :collection

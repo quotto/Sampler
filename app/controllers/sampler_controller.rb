@@ -1,3 +1,4 @@
+#coding: utf-8
 class SamplerController < ApplicationController
   def index
     #ランダムに30件取得する
@@ -45,7 +46,19 @@ class SamplerController < ApplicationController
     else
       @movies =  searchByKeyword(keyword_arr)
     end
-    render :xml => @movies, :status=>'200'
+    response ='<?xml version="1.0" encoding="utf-8"?><movies>'
+    @movies.each do |movie|
+      response << "<movie><dmm_id>#{movie.dmm_id}</dmm_id><title>#{movie.title}</title><thumbnail>#{movie.thumbnail}</thumbnail>"
+      tags = Tag.find_all_by_dmm_id(movie.dmm_id)
+      response << '<tags>'
+      tags.each do |tag|
+        response << "<tag>#{tag.tag_name}</tag>"
+      end
+      response << '</tags></movie>'
+    end
+    response << '</movies>'
+    puts response
+    render :xml => response, :status=>'200'
     
   end
   

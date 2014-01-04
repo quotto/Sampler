@@ -105,6 +105,17 @@ div.refresh {
   margin-bottom:10px;
 }
 
+div.tags {
+  margin:0 auto;
+  width:560px;
+  text-align:left;
+}
+
+div.tags a {
+  font-size:80%;
+  margin-right:5px;
+}
+
 #refreshLink {
   position:relative;
   left:-10%;

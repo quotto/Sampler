@@ -27,8 +27,14 @@ function refreshList() {
                   $videoItem = $('<div>').attr({'class':'item'},{'name':total_number})
                   $videoInner.append($videoItem);   
                 }
-                var url = "http://www.dmm.co.jp/litevideo/-/part/=/cid=" + $movie.find('dmm-id').text() + "/size=560_360";
-                $videoItem.append($('<object width="560" scrolling="no" height="400" frameborder="0" style="border:none;" border="0" type="text/html">').attr('data',url));
+                var url = "http://www.dmm.co.jp/litevideo/-/part/=/affi_id=quotto-003/cid=" + $movie.find('dmm_id').text() + "/size=560_360";
+                $videoItem.append($('<object width="560" scrolling="no" height="380" frameborder="0" style="border:none;" border="0" type="text/html">').attr('data',url));
+                $tagsDiv = $('<div class="tags"></div>');
+                $videoItem.append($tagsDiv);
+                $tags = $movie.find('tag')
+                jQuery.each($tags,function() {
+                    $tagsDiv.append('<a href="/sampler/search?keyword='+$(this).text()+'">'+$(this).text()+'</a>');
+                })
 
                 if(item_number == 0 ) {
                     if(selector_number == 0) {
