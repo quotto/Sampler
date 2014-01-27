@@ -14,4 +14,4 @@
 /log/*.log
 /tmp
 /vendor/bundle
-/.ruby-version
+.ruby-version

@@ -42,4 +42,7 @@ gem 'rmagick'
 gem 'therubyracer'
 group :development do
 	gem 'capistrano'
+	gem 'capistrano-rvm'
+	gem 'capistrano-bundler'
 end
+gem 'jpmobile'
