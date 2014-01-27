@@ -89,8 +89,11 @@ class DmmScraping
       #女優名を取得
       performers = res_link.css("#performer > a")
       performers.each{|performer|
-        performer_name = performer.text
-        saveTag(id,performer_name)
+        a_id = performer.attribute("id")
+        if  a_id == nil 
+          performer_name = performer.text
+          saveTag(id,performer_name)
+        end
       }
     }
   end
