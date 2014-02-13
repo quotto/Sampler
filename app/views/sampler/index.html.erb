@@ -30,6 +30,7 @@
   });
   $('img[rel=thumbnail]').tooltip();
   $('div.selector_item').click(function(){
+    console.log("click");
     jQuery.each($('div.selector_item'),function(){
       $(this).css('background','');
     });
