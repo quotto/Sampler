@@ -1,7 +1,22 @@
-<form id="searchform" role="form" class="form-inline" action="/sampler/search" method="post" style="text-align:center">
-  <div class="form-group">
-    <label class="sr-only" for="inputFormKeyword">Enter keyword</label>
-    <input id="inputFormKeyword" type="text" class="form-control input-sm" name="keyword" placeholder="検索ワードを入力" value="<%= @query %>" maxlength="30">
-  </div>
-  <button type="submit" class="btn btn-default btn-sm">検索</button>
-</form>
+<div class="keywordForm">
+  <form id="searchform" role="form" class="form-inline" action="/sampler/search" method="post" style="text-align:center">
+    <div class="form-group">
+      <label class="sr-only" for="inputFormKeyword">Enter keyword</label>
+      <input id="inputFormKeyword" type="text" class="form-control input-sm" name="keyword" placeholder="検索ワードを入力" value="<%= @query %>" maxlength="30">
+    </div>
+    <button type="submit" class="btn btn-default btn-sm">検索</button>
+  </form>
+  <a class="showModalLink" data-toggle="modal" data-target="#keywordModal">おすすめワード</a>
+  <div class="modal fade" id="keywordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <span class="modal-title">おすすめワード</span><span class="modal-title-comment">（5秒ごとに更新されます）</span>
+        </div>
+        <div class="modal-body">
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</div>

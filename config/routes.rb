@@ -56,11 +56,12 @@ Sampler::Application.routes.draw do
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id))(.:format)'
   root :to => 'sampler#index'
-    resources :sampler do
+  resources :sampler do
 		get 'index', :on => :collection
 		get 'search', :on => :collection
 		post 'search',:on => :collection
 		post 'refresh',:on => :collection
 		get 'refresh',:on => :collection
-	 end
+		get 'keyword_selection', :on => :collection
+  end
 end

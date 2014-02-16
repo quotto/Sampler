@@ -57,11 +57,16 @@ class SamplerController < ApplicationController
       response << '</tags></movie>'
     end
     response << '</movies>'
-    puts response
-    render :xml => response, :status=>'200'
+    render :xml=>response, :status=>'200'
     
   end
   
+  def keyword_selection
+    query = QueryCount.select("query,count").order("rand()").limit(30)
+    render :xml=>query.to_xml, :status=>'200'  
+  end
+  
+private  
   def searchByKeyword(keyword_arr)
     movies = Movie.arel_table
     tags = Tag.arel_table
@@ -76,5 +81,5 @@ class SamplerController < ApplicationController
       tag_cond = tag_cond.and(tags.project(Arel.sql('dmm_id')).where(tags[:dmm_id].eq(movies[:dmm_id]).and(tags[:tag_name].matches("%#{keyword_arr[i]}%"))).exists)
     end
     return Movie.where(movie_cond.or(tag_cond)).limit(30).order("RAND()")
-  end
+  end  
 end

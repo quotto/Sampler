@@ -21,10 +21,10 @@ function refreshList() {
                 var $movie = $(this);
                 var $videoItem;
                 if (total_number == 0) {
-                  $videoItem = $('<div>').attr({'class':'item active'},{'name':total_number})
+                  $videoItem = $('<div>').attr({'class':'item active','name':total_number})
                   $videoInner.append($videoItem);
                 } else {
-                  $videoItem = $('<div>').attr({'class':'item'},{'name':total_number})
+                  $videoItem = $('<div>').attr({'class':'item','name':total_number})
                   $videoInner.append($videoItem);   
                 }
                 var url = "http://www.dmm.co.jp/litevideo/-/part/=/affi_id=quotto-003/cid=" + $movie.find('dmm_id').text() + "/size=560_360";
@@ -75,4 +75,25 @@ function refreshList() {
             $('div.selector_item:first').css('background','rgba(255,0,0,0.7)');
         }
     });
+}
+
+function selectionQuery() {
+    url = '/sampler/keyword_selection';
+    $.ajax({
+        type: 'GET',
+        url: url,
+        datatype: 'xml',
+        success: function(responseText,status) {
+            var $query_counts = $(responseText).find("query-count");
+            $('#keywordModal div.modal-body').children().remove();
+            jQuery.each($query_counts,function() {
+                $query_count = $(this);
+                var $queryLink = $('<a></a>');
+                var query = $query_count.find('query').text();
+                $queryLink.attr('href','/sampler/search?keyword='+query);
+                $queryLink.text(query);
+                $('#keywordModal div.modal-body').append($queryLink);
+            });
+        }
+    })
 }

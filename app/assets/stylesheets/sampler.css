@@ -13,8 +13,38 @@
     font-size:60%;
 }
 
+div.keywordForm {
+  margin:0 auto;
+  width:560px;
+  text-align:center;
+  vertical-align:bottom;
+  margin-bottom:10px;
+}
+a.showModalLink {
+  cursor:pointer;
+  font-size:70%;
+  vertical-align:bottom;
+}
+
+#keywordModal div.modal-header {
+  text-align:left;
+}
+
+#keywordModal div.modal-body {
+  text-align:left;
+}
+
+#keywordModal div.modal-body > a {
+  margin-right:10px;
+}
+
+span.modal-title-comment {
+  font-size:80%;
+}
+
 #searchform {
-    margin-bottom:10px;
+    display:inline-block;
+    margin-right:20px;
 }
 
 #query {
