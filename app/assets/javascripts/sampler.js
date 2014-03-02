@@ -27,15 +27,15 @@ function refreshList() {
                   $videoItem = $('<div>').attr({'class':'item','name':total_number})
                   $videoInner.append($videoItem);   
                 }
-                var url = "http://www.dmm.co.jp/litevideo/-/part/=/affi_id=quotto-003/cid=" + $movie.find('dmm_id').text() + "/size=560_360";
-                $videoItem.append($('<object width="560" scrolling="no" height="380" frameborder="0" style="border:none;" border="0" type="text/html">').attr('data',url));
+                var dmm_id = $movie.find('dmm_id').text();
+                var $video = $('<div id="' + dmm_id + '" class="video" style="width:560px;height:360px;margin:0 auto;"></div>');
+                $videoItem.append($video);
                 $tagsDiv = $('<div class="tags"></div>');
                 $videoItem.append($tagsDiv);
                 $tags = $movie.find('tag')
                 jQuery.each($tags,function() {
                     $tagsDiv.append('<a href="/sampler/search?keyword='+$(this).text()+'">'+$(this).text()+'</a>');
-                })
-
+                });
                 if(item_number == 0 ) {
                     if(selector_number == 0) {
                         $selectorItem = $('<div class="selector item active">');
@@ -65,6 +65,24 @@ function refreshList() {
                     selector_number += 1;
                     item_number = 0;
                 }
+                
+                var clip_array = {
+                    url: "http://" + $movie.find("movie_url").text(),
+                    onFinish:function() {
+                        $("#videoCarousel").carousel('next');
+                    }
+                };
+                if(total_number == 0) {
+                    // 最 初 の 動 画 は 自 動 再 生 
+                    clip_array.autoPlay = true;
+                } else {
+                    // 2番 目 以 降 は バ ッ フ ァ リ ン グ を オ フ に す る 
+                    clip_array.autoPlay = false;
+                    clip_array.autoBuffering = false;
+                }
+                $f(dmm_id, "http://releases.flowplayer.org/swf/flowplayer-3.2.18.swf", {
+                    clip:  clip_array
+                });
             });
             if(item_number > 0) {
                 $selectorInner.append($selectorItem);
@@ -96,4 +114,16 @@ function selectionQuery() {
             });
         }
     })
+}
+
+function carouselNext() {
+    $('#videoCarousel').carousel('next');
+}
+
+function playMovie(dmm_id) {
+    $f(dmm_id).play();
+}
+
+function pauseMovie(dmm_id) {
+    $f(dmm_id).pause();
 }

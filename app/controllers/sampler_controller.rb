@@ -42,13 +42,13 @@ class SamplerController < ApplicationController
     keyword_arr = keyword.split();
     if keyword_arr ==nil || keyword_arr.length == 0
       #ランダムに30件取得する
-      @movies = Movie.find(:all,:select=>"dmm_id,title,thumbnail",:limit=>30,:order=>"RAND()")
+      @movies = Movie.find(:all,:select=>"dmm_id,title,thumbnail,movie_url",:limit=>30,:order=>"RAND()")
     else
       @movies =  searchByKeyword(keyword_arr)
     end
     response ='<?xml version="1.0" encoding="utf-8"?><movies>'
     @movies.each do |movie|
-      response << "<movie><dmm_id>#{movie.dmm_id}</dmm_id><title>#{movie.title}</title><thumbnail>#{movie.thumbnail}</thumbnail>"
+      response << "<movie><dmm_id>#{movie.dmm_id}</dmm_id><title>#{movie.title}</title><thumbnail>#{movie.thumbnail}</thumbnail><movie_url>#{movie.movie_url}</movie_url>"
       tags = Tag.find_all_by_dmm_id(movie.dmm_id)
       response << '<tags>'
       tags.each do |tag|

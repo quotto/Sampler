@@ -20,17 +20,25 @@
   $('.carousel').carousel({
     interval: false
   })
-  //選択サムネイルのマークアップ処理
+  
+  /* スライド実行時の処理 */
+  $('#videoCarousel').on('slide.bs.carousel',function() {
+    var dmm_id = $('#videoCarousel div.active div.video').attr('id');
+    pauseMovie(dmm_id);
+  });
+  /* スライド完了後の処理 */
   $('#videoCarousel').on('slid.bs.carousel',function() {
     var num = $('#videoCarousel div.active').attr('name');
+    var dmm_id = $('#videoCarousel div.active div.video').attr('id');
+    playMovie(dmm_id);
     jQuery.each($('div.selector_item'),function(){
       $(this).css('background','');
     });
+    //選択サムネイルのマークアップ処理
     $('#selectorCarousel div.selector_item[name=' + num +']').css('background','rgba(255,0,0,0.7)');
   });
   $('img[rel=thumbnail]').tooltip();
   $('div.selector_item').click(function(){
-    console.log("click");
     jQuery.each($('div.selector_item'),function(){
       $(this).css('background','');
     });
@@ -40,5 +48,5 @@
   $('div.selector_item:first').css('background','rgba(255,0,0,0.7)');
   refreshList();
   selectionQuery();
-  window.setInterval(selectionQuery,5000);
+  //window.setInterval(selectionQuery,5000);
 </script>

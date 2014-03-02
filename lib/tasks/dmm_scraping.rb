@@ -12,6 +12,13 @@ require 'movie.rb'
 require 'tag.rb'
 class DmmScraping
   private
+  BITRATE_ID_300K = "sm_"
+  BITRATE_ID_1000K = "dm_"
+  BITRATE_ID_1500K = "dmb_"
+  ASPECT_SINGLE_MARK = "s"
+  ASPECT_WIDE_MARK = "w"
+  MP4_HOSTNAME = "cc3001.dmm.co.jp/litevideo/freepv/"
+
   def initialize
     @page = 1
     @logfile = LogUtil.new("#{Rails.root}/log/scraping.log","#{Rails.root}/log/error.log")
@@ -95,6 +102,31 @@ class DmmScraping
           saveTag(id,performer_name)
         end
       }
+      
+      #動画ファイルのURL生成
+      #objectタグのflashvarsパラメータ取得
+      /flashvars.bid = "(.+)"/ =~ res_link.css("body").text
+      bid = $1
+      
+      showBitRate = bid[0,1]
+      bitRate = BITRATE_ID_300K
+      if (showBitRate.to_i & 1)
+        bitRate = BITRATE_ID_300K
+      end
+      if (showBitRate.to_i & 2)
+        bitRate = BITRATE_ID_1000K
+      end
+      if (showBitRate.to_i & 4)
+        bitRate = BITRATE_ID_1500K
+      end
+      
+      aspectMark = ""
+      if (bid[1,1] == ASPECT_WIDE_MARK)
+        aspectMark = ASPECT_WIDE_MARK
+      else
+        aspectMark = ASPECT_SINGLE_MARK
+      end
+      mp4_url = MP4_HOSTNAME + id[0,1] + "/" + id[0,3] + "/" + id + "/" + id + "_" + bitRate + aspectMark + ".mp4"
     }
   end
 
