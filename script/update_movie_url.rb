@@ -1,7 +1,6 @@
 #coding utf-8
 require 'nokogiri'
 require 'net/http'
-require 'logutil.rb'
 
 BITRATE_ID_300K = "sm_"
 BITRATE_ID_1000K = "dm_"
@@ -9,7 +8,9 @@ BITRATE_ID_1500K = "dmb_"
 ASPECT_SINGLE_MARK = "s"
 ASPECT_WIDE_MARK = "w"
 MP4_HOSTNAME = "cc3001.dmm.co.jp/litevideo/freepv/"
-@logfile = LogUtil.new("#{Rails.root}/log/update_movie_url.log","#{Rails.root}/log/update_movie_url.log")
+@logger = Logger.new("#{Rails.root}/log/update_movie_url.log",3,10 * 1024 * 1024)
+time = DateTime.now
+@logger.info(sprintf("[%d-%d-%d %d:%d:%d] start update movie_url",time.year,time.mon,time.mday,time.hour,time.min,time.sec))
 
 Movie.transaction do
   movies = Movie.all
@@ -27,6 +28,8 @@ Movie.transaction do
         
         #動画ファイルのURL生成
         #objectタグのflashvarsパラメータ取得
+        /flashvars.fid = "(.+)"/ =~ res_link.css("body").text
+        fid = $1
         /flashvars.bid = "(.+)"/ =~ res_link.css("body").text
         bid = $1
         
@@ -48,16 +51,19 @@ Movie.transaction do
         else
           aspectMark = ASPECT_SINGLE_MARK
         end
-        puts "bid:#{bid},bitRate:#{bitRate}"
-        mp4_url = MP4_HOSTNAME + dmm_id[0,1] + "/" + dmm_id[0,3] + "/" + dmm_id + "/" + dmm_id + "_" + bitRate + aspectMark + ".mp4"
+        mp4_url = MP4_HOSTNAME + fid[0,1] + "/" + fid[0,3] + "/" + fid + "/" + fid + "_" + bitRate + aspectMark + ".mp4"
         movie.movie_url = mp4_url
         movie.save
-        @logfile.write("[update]#{dmm_id},bip:#{bid} => #{mp4_url}")
+        @logger.info("Update #{dmm_id},bip:#{bid} => #{mp4_url}")
       else
-        puts "not found page at #{dmm_id}"
+        @logger.warn("#{dmm_id} => not found page}")
       end
     rescue => e
-      @logfile.write("[error]#{dmm_id} => #{e.message}")
+      @logger.error("Error #{dmm_id} => #{e.message}")
     end
     }
 end
+
+time = DateTime.now
+@logger.info(sprintf("[%d-%d-%d %d:%d:%d] end update movie_url",time.year,time.mon,time.mday,time.hour,time.min,time.sec))
+

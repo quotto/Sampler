@@ -150,3 +150,10 @@ div.tags a {
   position:relative;
   left:-10%;
 }
+
+a.player {
+  display:block;
+  width:560px;
+  height:360px;
+  margin:0 auto;
+}

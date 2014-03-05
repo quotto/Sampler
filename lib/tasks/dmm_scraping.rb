@@ -7,7 +7,6 @@ require 'open-uri'
 require 'net/http'
 require 'uri'
 require 'cgi'
-require 'logutil.rb'
 require 'movie.rb'
 require 'tag.rb'
 class DmmScraping
@@ -21,7 +20,7 @@ class DmmScraping
 
   def initialize
     @page = 1
-    @logfile = LogUtil.new("#{Rails.root}/log/scraping.log","#{Rails.root}/log/error.log")
+     @logger = Logger.new("#{Rails.root}/log/scraping.log",5,10 * 1024 * 1024)
   end
   
   def getPage(url)
@@ -35,20 +34,23 @@ class DmmScraping
     return res_a
   end 
   
-  def saveMovie(id,title,thumbnail)
+  def saveMovie(id,title,thumbnail,movie_url)
     newMovie = Movie.new(
       :dmm_id=>id,
       :title=>title,
-      :thumbnail=>thumbnail
+      :thumbnail=>thumbnail,
+      :movie_url=>movie_url
       )
     begin
       if newMovie.save
-        @logfile.write("[info]Success insert movie id:#{id},title:#{title}")
+        @logger.info("Success insert movie id:#{id},title:#{title}")
       else
-        @logfile.write("[warning]:Not insert movie id:#{id},title:#{title}")
+        @logger.warn("Not insert movie id:#{id},title:#{title}")
       end
-    rescue
-        @logfile.write("[warning]:Not insert movie id:#{id},title:#{title}")
+    rescue ActiveRecord::RecordNotUnique => e
+      @logger.error("Not insert movie(duplicate) id:#{id}")
+    rescue => e
+        @logger.error("Not insert movie(error) id:#{id} => #{e.inspect}")
     end
   end
   
@@ -59,12 +61,12 @@ class DmmScraping
       )
     begin
       if newTag.save
-        @logfile.write("[info]Success insert id:#{id},tag:#{tag_name}")
+        @logger.info("Success insert tag id:#{id},tag:#{tag_name}")
       else
-        @logfile.write("[warning]Not insert id:#{id},tag:#{tag_name}")
+        @logger.warn("Not insert tag(duplicate) id:#{id},tag:#{tag_name}")
       end
-    rescue
-        @logfile.write("[warning]:Not insert movie id:#{id},tag:#{title}")
+    rescue => e
+        @logger.error("Not insert tag(error) id:#{id},tag:#{tag_name} => #{e.inspect}")
     end
   end
   
@@ -85,7 +87,35 @@ class DmmScraping
       }
       res_link = Nokogiri::HTML(response.body)
       title = res_link.css("#page > h1 > span").text
-      saveMovie(id,title,thumbnail_url)
+      
+      #動画ファイルのURL生成
+      #objectタグのflashvarsパラメータ取得
+      /flashvars.fid = "(.+)"/ =~ res_link.css("body").text
+      fid = $1
+      /flashvars.bid = "(.+)"/ =~ res_link.css("body").text
+      bid = $1
+      
+      showBitRate = bid[0,1]
+      bitRate = BITRATE_ID_300K
+      if ((showBitRate.to_i & 1) > 0)
+        bitRate = BITRATE_ID_300K
+      end
+      if ((showBitRate.to_i & 2) > 0)
+        bitRate = BITRATE_ID_1000K
+      end
+      if ((showBitRate.to_i & 4) > 0)
+        bitRate = BITRATE_ID_1500K
+      end
+      
+      aspectMark = ""
+      if (bid[1,1] == ASPECT_WIDE_MARK)
+        aspectMark = ASPECT_WIDE_MARK
+      else
+        aspectMark = ASPECT_SINGLE_MARK
+      end
+      mp4_url = MP4_HOSTNAME + fid[0,1] + "/" + fid[0,3] + "/" + fid + "/" + fid + "_" + bitRate + aspectMark + ".mp4"
+
+      saveMovie(id,title,thumbnail_url,mp4_url)
       
       #タグの取得
       tags = res_link.css("ul.tags > li span")
@@ -102,59 +132,39 @@ class DmmScraping
           saveTag(id,performer_name)
         end
       }
-      
-      #動画ファイルのURL生成
-      #objectタグのflashvarsパラメータ取得
-      /flashvars.bid = "(.+)"/ =~ res_link.css("body").text
-      bid = $1
-      
-      showBitRate = bid[0,1]
-      bitRate = BITRATE_ID_300K
-      if (showBitRate.to_i & 1)
-        bitRate = BITRATE_ID_300K
-      end
-      if (showBitRate.to_i & 2)
-        bitRate = BITRATE_ID_1000K
-      end
-      if (showBitRate.to_i & 4)
-        bitRate = BITRATE_ID_1500K
-      end
-      
-      aspectMark = ""
-      if (bid[1,1] == ASPECT_WIDE_MARK)
-        aspectMark = ASPECT_WIDE_MARK
-      else
-        aspectMark = ASPECT_SINGLE_MARK
-      end
-      mp4_url = MP4_HOSTNAME + id[0,1] + "/" + id[0,3] + "/" + id + "/" + id + "_" + bitRate + aspectMark + ".mp4"
     }
   end
 
   def executeByRank
-    @logfile.write("start scraping(Rank)")
+    time = DateTime.now
+		@logger.info(sprintf("[%d-%d-%d %d:%d:%d] start scraping(ByRank)",time.year,time.mon,time.mday,time.hour,time.min,time.sec))
     res_a = getCategory
     res_a.each{|a|
       #ジャンルごとのキーワードでスクレイピング開始（再生回数順）
       keyword =  a.text
       link =  a.attribute("href").value
-      @logfile.write("scraping: keyword=#{keyword}\n")
+      @logger.info("scraping: keyword=#{keyword}\n")
       @url = "http://www.dmm.co.jp#{link}/limit=60/sort=all_ranking/"
       scraping()
     }
-    @logfile.write("end scraping[Rank]")
+    time = DateTime.now
+    @logger.info(sprintf("[%d-%d-%d %d:%d:%d] end scraping(ByRank)",time.year,time.mon,time.mday,time.hour,time.min,time.sec))
   end
   
   def executeByDate
-    @logfile.write("start scraping(Date)")
+    time = DateTime.now
+		@logger.info(sprintf("[%d-%d-%d %d:%d:%d] start scraping(ByDate)",time.year,time.mon,time.mday,time.hour,time.min,time.sec))
     res_a = getCategory()
     res_a.each{|a|
       #ジャンルごとのキーワードでスクレイピング開始（再生回数順）
       keyword =  a.text
       link =  a.attribute("href").value
-      @logfile.write("scraping: keyword=#{keyword}\n")
+      #@logfile.write("scraping: keyword=#{keyword}\n")
+      @logger.info("scraping: keyword=#{keyword}\n")
       @url = "http://www.dmm.co.jp#{link}/sort=date/"
       scraping()
     }
-    @logfile.write("end scraping[Date]")
+    time = DateTime.now
+    @logger.info(sprintf("[%d-%d-%d %d:%d:%d] end scraping(ByDate)",time.year,time.mon,time.mday,time.hour,time.min,time.sec))
   end
 end

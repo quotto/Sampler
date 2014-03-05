@@ -27,8 +27,7 @@ function refreshList() {
                   $videoItem = $('<div>').attr({'class':'item','name':total_number})
                   $videoInner.append($videoItem);   
                 }
-                var dmm_id = $movie.find('dmm_id').text();
-                var $video = $('<div id="' + dmm_id + '" class="video" style="width:560px;height:360px;margin:0 auto;"></div>');
+                var $video = $('<a class="player" href="http://' + $movie.find("movie_url").text() + '"></a>');
                 $videoItem.append($video);
                 $tagsDiv = $('<div class="tags"></div>');
                 $videoItem.append($tagsDiv);
@@ -64,25 +63,7 @@ function refreshList() {
                     $selectorInner.append($selectorItem);
                     selector_number += 1;
                     item_number = 0;
-                }
-                
-                var clip_array = {
-                    url: "http://" + $movie.find("movie_url").text(),
-                    onFinish:function() {
-                        $("#videoCarousel").carousel('next');
-                    }
-                };
-                if(total_number == 0) {
-                    // 最 初 の 動 画 は 自 動 再 生 
-                    clip_array.autoPlay = true;
-                } else {
-                    // 2番 目 以 降 は バ ッ フ ァ リ ン グ を オ フ に す る 
-                    clip_array.autoPlay = false;
-                    clip_array.autoBuffering = false;
-                }
-                $f(dmm_id, "http://releases.flowplayer.org/swf/flowplayer-3.2.18.swf", {
-                    clip:  clip_array
-                });
+                }                
             });
             if(item_number > 0) {
                 $selectorInner.append($selectorItem);
@@ -91,6 +72,15 @@ function refreshList() {
             $('img[rel=thumbnail]').tooltip();
             // 初期表示時は最初のサムネイルをマークアップする
             $('div.selector_item:first').css('background','rgba(255,0,0,0.7)');
+            // flowplayerを設定
+            flowplayer("a.player","http://releases.flowplayer.org/swf/flowplayer-3.2.18.swf",{
+                clip: {
+                    autoPlay:true,
+                    onFinish:function() {
+                        $("#videoCarousel").carousel('next');
+                    }
+                }
+            });
         }
     });
 }
@@ -120,10 +110,10 @@ function carouselNext() {
     $('#videoCarousel').carousel('next');
 }
 
-function playMovie(dmm_id) {
-    $f(dmm_id).play();
+function playMovie(num) {
+    flowplayer(parseInt(num)).play();
 }
 
-function pauseMovie(dmm_id) {
-    $f(dmm_id).pause();
+function pauseMovie(num) {
+    flowplayer(parseInt(dmm_id)).stop();
 }

@@ -34,4 +34,7 @@ Sampler::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  config.logger = Logger.new("log/development.log",5,10 * 1024 * 1024)
 end
+
