@@ -11,15 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140224152245) do
+ActiveRecord::Schema.define(:version => 20140316154127) do
 
   create_table "movies", :id => false, :force => true do |t|
-    t.string   "dmm_id",     :null => false
-    t.string   "title",      :null => false
-    t.string   "thumbnail",  :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string   "dmm_id",                      :null => false
+    t.string   "title",                       :null => false
+    t.string   "thumbnail",                   :null => false
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
     t.string   "movie_url"
+    t.string   "description", :limit => 1000
   end
 
   add_index "movies", ["dmm_id"], :name => "index_movies_on_dmm_id", :unique => true

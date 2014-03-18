@@ -56,7 +56,7 @@ Movie.transaction do
         movie.save
         @logger.info("Update #{dmm_id},bip:#{bid} => #{mp4_url}")
       else
-        @logger.warn("#{dmm_id} => not found page}")
+        @logger.warn("#{dmm_id} => not found page")
       end
     rescue => e
       @logger.error("Error #{dmm_id} => #{e.message}")
@@ -66,4 +66,3 @@ end
 
 time = DateTime.now
 @logger.info(sprintf("[%d-%d-%d %d:%d:%d] end update movie_url",time.year,time.mon,time.mday,time.hour,time.min,time.sec))
-

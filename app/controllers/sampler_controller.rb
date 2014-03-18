@@ -71,9 +71,10 @@ private
     movies = Movie.arel_table
     tags = Tag.arel_table
 
-    movie_cond = movies[:title].matches("%#{keyword_arr[0]}%")
+    #movie_cond = movies[:title].matches("%#{keyword_arr[0]}%")
+    movie_cond = movies[:title].matches("%#{keyword_arr[0]}%").or(movies[:description].matches("%#{keyword_arr[]}%"))
     for i in 1..keyword_arr.length-1 do
-      movie_cond = movie_cond.and(movies[:title].matches("%#{keyword_arr[i]}%"))
+      movie_cond = movie_cond.and(movies[:title].matches("%#{keyword_arr[i]}%").or(movies[:description].matches("%#{keyword_arr[i]}%")))
     end
       
     tag_cond = tags.project(Arel.sql('dmm_id')).where(tags[:dmm_id].eq(movies[:dmm_id]).and(tags[:tag_name].matches("%#{keyword_arr[0]}%"))).exists
