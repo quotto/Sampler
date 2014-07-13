@@ -4,7 +4,7 @@ set :repo_url, 'git@github.com:quotto/Sampler.git'
 
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
-set :deploy_to, '/var/www/sampler'
+set :deploy_to, '/var/www/project/sampler'
 set :scm, :git
 
 # set :format, :pretty
@@ -17,19 +17,21 @@ set :scm, :git
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 # set :keep_releases, 5
 
-#set :rvm_base_path, "/usr/local/rvm"
-set :rvm_ruby_version, "ruby-1.9.3-p448"
-#set :rvm_rb_path, "#{fetch :rvm_base_path}/gems/#{fetch :rvm_rb_version}"
-#set :default_env, {
-#  path: "#{fetch :rvm_rb_path}/bin:#{fetch :rvm_rb_path}@global/bin:#{fetch :rvm_base_path}/rubies/#{fetch :rvm_rb_version}/bin:$PATH"
-#}
+set :rbenv_ruby,'2.1.2'
+
+set :default_env, {
+  rbenv_root: "#{fetch(:rbenv_path)}",
+  path: "#{fetch :rbenv_path}/shims:#{fetch :rbenv_path}/bin:$PATH"
+}
+
+set :bundle_without[:development]
 
 namespace :deploy do  
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
       # Your restart mechanism here, for example:
-       execute :touch, "#{fetch :deploy_to}/tmp/restart.txt"
+      execute :touch, "#{fetch :deploy_to}/current/tmp/restart.txt"
     end
   end
 end

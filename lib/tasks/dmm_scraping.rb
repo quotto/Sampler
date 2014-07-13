@@ -35,12 +35,14 @@ class DmmScraping
   end 
   
   def saveMovie(id,title,thumbnail,movie_url)
-    newMovie = Movie.new(
-      :dmm_id=>id,
-      :title=>title,
-      :thumbnail=>thumbnail,
-      :movie_url=>movie_url
-      )
+    movie_param = ActionController::Parameters.new(movie: {dmm_id: id, title: title, thumbnail: thumbnail,movie_url: movie_url})
+    # newMovie = Movie.new(
+    #   :dmm_id=>id,
+    #   :title=>title,
+    #   :thumbnail=>thumbnail,
+    #   :movie_url=>movie_url
+    #   )
+    newMovie = Movie.new(movie_param[:movie].permit!)
     begin
       if newMovie.save
         @logger.info("Success insert movie id:#{id},title:#{title}")
@@ -55,10 +57,12 @@ class DmmScraping
   end
   
   def saveTag(id,tag_name)    
-    newTag = Tag.new(
-      :dmm_id=>id,
-      :tag_name=>tag_name
-      )
+    tag_param = ActionController::Parameters.new(tag: {dmm_id: id, tag_name: tag_name})
+    newTag = Tag.new(tag_param[:tag].permit!)
+    # newTag = Tag.new(
+    #   :dmm_id=>id,
+    #   :tag_name=>tag_name
+    #   )
     begin
       if newTag.save
         @logger.info("Success insert tag id:#{id},tag:#{tag_name}")

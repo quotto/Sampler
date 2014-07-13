@@ -29,5 +29,5 @@ production:
   pool: 5
   timeout: 5000
   user: root
-  password: ED8zUqvqk4
+  password: jabberwocky
   socket: /var/lib/mysql/mysql.sock

@@ -2,7 +2,6 @@
 class SamplerController < ApplicationController
   def index
     #ランダムに30件取得する
-    @movies = Movie.find(:all,:select=>"dmm_id,title,thumbnail",:limit=>30,:order=>"RAND()")
     respond_to do |format|
       format.html # index.html.erb
     end
@@ -21,8 +20,8 @@ class SamplerController < ApplicationController
         queryCount = QueryCount.arel_table
         if QueryCount.exists?(:query=>query)
           queryResult = QueryCount.where(queryCount[:query].eq(query)).first
-          count = queryResult.count + 1
-          queryResult.update_attributes(:count=>count);
+          count_param = ActionController::Parameters.new(params: {count:queryResult.count + 1})
+          queryResult.update_attributes(count_param.require(:params).permit(:count))
         else
           newQuery = QueryCount.new(:query=>query,:count=>1)
           newQuery.save
@@ -42,14 +41,14 @@ class SamplerController < ApplicationController
     keyword_arr = keyword.split();
     if keyword_arr ==nil || keyword_arr.length == 0
       #ランダムに30件取得する
-      @movies = Movie.find(:all,:select=>"dmm_id,title,thumbnail,movie_url",:limit=>30,:order=>"RAND()")
+      @movies = Movie.select('dmm_id,title,thumbnail,movie_url').order('rand()').limit(30)
     else
       @movies =  searchByKeyword(keyword_arr)
     end
     response ='<?xml version="1.0" encoding="utf-8"?><movies>'
     @movies.each do |movie|
       response << "<movie><dmm_id>#{movie.dmm_id}</dmm_id><title>#{movie.title}</title><thumbnail>#{movie.thumbnail}</thumbnail><movie_url>#{movie.movie_url}</movie_url>"
-      tags = Tag.find_all_by_dmm_id(movie.dmm_id)
+      tags = Tag.where(dmm_id: movie.dmm_id)
       response << '<tags>'
       tags.each do |tag|
         response << "<tag>#{tag.tag_name}</tag>"
@@ -71,8 +70,7 @@ private
     movies = Movie.arel_table
     tags = Tag.arel_table
 
-    #movie_cond = movies[:title].matches("%#{keyword_arr[0]}%")
-    movie_cond = movies[:title].matches("%#{keyword_arr[0]}%").or(movies[:description].matches("%#{keyword_arr[]}%"))
+    movie_cond = movies[:title].matches("%#{keyword_arr[0]}%").or(movies[:description].matches("%#{keyword_arr[0]}%"))
     for i in 1..keyword_arr.length-1 do
       movie_cond = movie_cond.and(movies[:title].matches("%#{keyword_arr[i]}%").or(movies[:description].matches("%#{keyword_arr[i]}%")))
     end
