@@ -148,6 +148,7 @@ DEPENDENCIES
   mysql2
   nokogiri
   passenger
+  rack
   rails (~> 4.1.0)
   rmagick
   sass-rails (~> 4.0.0)

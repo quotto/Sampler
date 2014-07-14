@@ -48,3 +48,4 @@ group :development do
 end
 gem 'jpmobile'
 gem 'passenger'
+gem 'rack'
