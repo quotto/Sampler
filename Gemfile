@@ -47,3 +47,4 @@ group :development do
   gem 'capistrano-rails'
 end
 gem 'jpmobile'
+gem 'passenger'
