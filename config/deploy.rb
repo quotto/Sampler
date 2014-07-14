@@ -24,9 +24,17 @@ set :default_env, {
   path: "#{fetch :rbenv_path}/shims:#{fetch :rbenv_path}/bin:$PATH"
 }
 
-set :bundle_without[:development]
+set :bundle_without, [:development]
 
 namespace :deploy do  
+  desc 'Delete assets'
+  task :clear_assets do
+    on roles(:app),in: :sequence, wait: 5 do
+      execute :rm, "-rf shared/public/assets"
+    end
+  end
+  after :starting, :clear_assets
+    
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
@@ -34,4 +42,6 @@ namespace :deploy do
       execute :touch, "#{fetch :deploy_to}/current/tmp/restart.txt"
     end
   end
+
+  after :publishing, :restart
 end
