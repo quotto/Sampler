@@ -83,59 +83,63 @@ class DmmScraping
       start_index = link_url.index("cid=")
       id = link_url.slice((start_index+4)..(link_url.length-2))
 
-      #リンク先からタイトルを取得する
-      purl = URI.parse("http://www.dmm.co.jp/litevideo/-/detail/=/cid=#{id}/");	
-      req = Net::HTTP::Get.new(purl.path)
-      response = Net::HTTP.start(purl.host,purl.port) { |http|
-        http.request(req);
-      }
-      res_link = Nokogiri::HTML(response.body)
-      title = res_link.css("#page > h1 > span").text
-      
-      #動画ファイルのURL生成
-      #objectタグのflashvarsパラメータ取得
-      /flashvars.fid = "(.+)"/ =~ res_link.css("body").text
-      fid = $1
-      /flashvars.bid = "(.+)"/ =~ res_link.css("body").text
-      bid = $1
-      
-      showBitRate = bid[0,1]
-      bitRate = BITRATE_ID_300K
-      if ((showBitRate.to_i & 1) > 0)
-        bitRate = BITRATE_ID_300K
-      end
-      if ((showBitRate.to_i & 2) > 0)
-        bitRate = BITRATE_ID_1000K
-      end
-      if ((showBitRate.to_i & 4) > 0)
-        bitRate = BITRATE_ID_1500K
-      end
-      
-      aspectMark = ""
-      if (bid[1,1] == ASPECT_WIDE_MARK)
-        aspectMark = ASPECT_WIDE_MARK
-      else
-        aspectMark = ASPECT_SINGLE_MARK
-      end
-      mp4_url = MP4_HOSTNAME + fid[0,1] + "/" + fid[0,3] + "/" + fid + "/" + fid + "_" + bitRate + aspectMark + ".mp4"
+      begin
+        #リンク先からタイトルを取得する
+        purl = URI.parse("http://www.dmm.co.jp/litevideo/-/detail/=/cid=#{id}/");	
+        req = Net::HTTP::Get.new(purl.path)
+        response = Net::HTTP.start(purl.host,purl.port) { |http|
+          http.request(req);
+        }
+        res_link = Nokogiri::HTML(response.body)
+        title = res_link.css("#page > h1 > span").text
 
-      saveMovie(id,title,thumbnail_url,mp4_url)
-      
-      #タグの取得
-      tags = res_link.css("ul.tags > li span")
-      tags.each{ |tag|
-        tag_name = tag.text
-        saveTag(id,tag_name)
-      }
-      #女優名を取得
-      performers = res_link.css("#performer > a")
-      performers.each{|performer|
-        a_id = performer.attribute("id")
-        if  a_id == nil 
-          performer_name = performer.text
-          saveTag(id,performer_name)
+        #動画ファイルのURL生成
+        #objectタグのflashvarsパラメータ取得
+        /flashvars.fid = "(.+)"/ =~ res_link.css("body").text
+        fid = $1
+        /flashvars.bid = "(.+)"/ =~ res_link.css("body").text
+        bid = $1
+
+        showBitRate = bid[0,1]
+        bitRate = BITRATE_ID_300K
+        if ((showBitRate.to_i & 1) > 0)
+          bitRate = BITRATE_ID_300K
         end
-      }
+        if ((showBitRate.to_i & 2) > 0)
+          bitRate = BITRATE_ID_1000K
+        end
+        if ((showBitRate.to_i & 4) > 0)
+          bitRate = BITRATE_ID_1500K
+        end
+
+        aspectMark = ""
+        if (bid[1,1] == ASPECT_WIDE_MARK)
+          aspectMark = ASPECT_WIDE_MARK
+        else
+          aspectMark = ASPECT_SINGLE_MARK
+        end
+        mp4_url = MP4_HOSTNAME + fid[0,1] + "/" + fid[0,3] + "/" + fid + "/" + fid + "_" + bitRate + aspectMark + ".mp4"
+
+        saveMovie(id,title,thumbnail_url,mp4_url)
+
+        #タグの取得
+        tags = res_link.css("ul.tags > li span")
+        tags.each{ |tag|
+          tag_name = tag.text
+          saveTag(id,tag_name)
+        }
+        #女優名を取得
+        performers = res_link.css("#performer > a")
+        performers.each{|performer|
+          a_id = performer.attribute("id")
+          if  a_id == nil 
+            performer_name = performer.text
+            saveTag(id,performer_name)
+          end
+        }
+      rescue => e
+        @logger.error("Error at #{id}:\n#{e}")
+      end
     }
   end
 
