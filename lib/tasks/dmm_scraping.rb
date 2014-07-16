@@ -50,7 +50,7 @@ class DmmScraping
         @logger.warn("Not insert movie id:#{id},title:#{title}")
       end
     rescue ActiveRecord::RecordNotUnique => e
-      @logger.error("Not insert movie(duplicate) id:#{id}")
+      @logger.warn("Not insert movie(duplicate) id:#{id}")
     rescue => e
         @logger.error("Not insert movie(error) id:#{id} => #{e.inspect}")
     end
@@ -70,7 +70,7 @@ class DmmScraping
         @logger.warn("Not insert tag(duplicate) id:#{id},tag:#{tag_name}")
       end
     rescue => e
-        @logger.error("Not insert tag(error) id:#{id},tag:#{tag_name} => #{e.inspect}")
+        @logger.warn("Not insert tag(error) id:#{id},tag:#{tag_name} => #{e.inspect}")
     end
   end
   
