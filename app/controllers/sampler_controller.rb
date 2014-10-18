@@ -13,7 +13,7 @@ class SamplerController < ApplicationController
     keyword_arr = keyword.split();
     if(keyword_arr.length == 0)
       #検索ワードが検出できない場合は全検索処理を行う
-      index
+      render 'index' 
     else
       @movies = searchByKeyword(keyword_arr)
       keyword_arr.each {|query|
