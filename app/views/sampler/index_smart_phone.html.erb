@@ -1,0 +1,91 @@
+<%= render 'header_smart_phone' %>
+<div class="container" id="container">
+  <%= render 'search_form_smartphone' %>
+  <div id="query"><%= @query %></div>
+  <div id="videoCarousel" class="carousel slide">
+    <div class="carousel-inner">
+    </div>
+  </div>
+  <div id="refreshLink"><button class="refresh btn btn-default btn-xs" onClick="refreshList()">リストを更新</button></div>
+  <div id="selectorCarousel" class="carousel slide">
+    <ol class="carousel-indicators"></ol>
+    <div class="carousel-inner">
+    </div>
+    <a class="left carousel-control" href="#selectorCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+    <a class="right carousel-control" href="#selectorCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+  </div>
+</div>
+<div class="ninja_onebutton">
+<script type="text/javascript">
+//<![CDATA[
+(function(d){
+if(typeof(window.NINJA_CO_JP_ONETAG_BUTTON_f467ed8d487977086b187c56c6c65516)=='undefined'){
+    document.write("<sc"+"ript type='text\/javascript' src='http:\/\/omt.shinobi.jp\/b\/f467ed8d487977086b187c56c6c65516'><\/sc"+"ript>");
+}else{
+    window.NINJA_CO_JP_ONETAG_BUTTON_f467ed8d487977086b187c56c6c65516.ONETAGButton_Load();}
+})(document);
+//]]>
+</script><span class="ninja_onebutton_hidden" style="display:none;"></span><span style="display:none;" class="ninja_onebutton_hidden"></span>
+</div>
+<script type="text/javascript">
+  $('.carousel').carousel({
+    interval: false
+  })
+  
+  /* スライド実行時の処理 */
+  $('#videoCarousel').on('slide.bs.carousel',function() {
+  try {
+    var num = $('#videoCarousel div.active').attr('name');
+    // pauseMovie(num);
+  }catch(e) {
+    console.log(e);
+  }
+  });
+  /* スライド完了後の処理 */
+  $('#videoCarousel').on('slid.bs.carousel',function() {
+    try {
+    var num = $('#videoCarousel div.active').attr('name');
+    // playMovie(num);
+    jQuery.each($('div.selector_item > img'),function(){
+      $(this).css({
+        'background':'none',
+        'opacity':'1.0'});
+    });
+    //選択サムネイルのマークアップ処理
+    $('#selectorCarousel div.selector_item[name=' + num +'] > img').css({
+      'background':'gray',
+      'opacity':'0.5'
+    });
+    }catch(e) {
+      console.log(e);
+    }
+
+  });
+  $('img[rel=thumbnail]').tooltip();
+  $('div.selector_item').click(function(){
+      jQuery.each($('div.selector_item > img'),function(){
+        $(this).css({
+          'background':'none',
+          'opacity':'1.0'
+          });
+        });
+      $(this).css({
+        'background':'gray',
+        'opacity':'0.5'
+        });
+  });
+/* 初期化処理  */
+  // 初期表示時は最初のサムネイルをマークアップする
+$('div.selector_item:first > img').css({
+    'background':'gray',
+    'opacity':'0.5'
+    });
+  // リストを更新する
+  refreshList();
+  // おすすめキーワードの読み込み
+  selectionQuery();
+  window.setInterval(selectionQuery,5000);
+  // カスタムvideoCarousel
+  $('#videoCarousel-left').bind('click',function(){$('#videoCarousel').carousel('prev');});
+  $('#videoCarousel-right').bind('click',function(){$('#videoCarousel').carousel('next');});
+</script>

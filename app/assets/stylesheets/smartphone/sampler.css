@@ -1,0 +1,201 @@
+/* フォント設定  */
+@font-face {
+  font-family: 'Glyphicons Halflings Sampler';
+  src: url('../fonts/glyphicons-halflings-regular.eot');
+  src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
+}
+
+.glyphicon {
+    font-family: 'Glyphicons Halflings Sampler';
+}
+
+/* ヘッダー部 */
+.small{
+    color:white;
+    font-size:60%;
+}
+
+/* サーチフォーム */
+div.keywordForm {
+  margin:0 auto;
+  width:100%;
+  text-align:center;
+  vertical-align:bottom;
+  margin-bottom:5px;
+}
+#searchform {
+  margin-bottom:0;
+}
+#searchform > div.form-group {
+  display:inline-block;
+  width:70%;
+}
+#searchform > button {
+  display:inline-block;
+}
+
+/* 検索引き継ぎ用キーワード（非表示） */
+#query {
+    visibility:hidden;
+}
+
+/* おすすめキーワード  */
+a.showModalLink {
+  cursor:pointer;
+  font-size:70%;
+  vertical-align:bottom;
+}
+
+#keywordModal div.modal-header {
+  text-align:left;
+}
+
+#keywordModal div.modal-body {
+  text-align:left;
+}
+
+#keywordModal div.modal-body > a {
+  margin-right:10px;
+}
+
+span.modal-title-comment {
+  font-size:80%;
+}
+
+/* 動画スライダー  */
+#controlers {
+  text-align:center;
+  position:relative;
+  margin-bottom:1px;
+}
+
+#videoCarousel-left,#videoCarousel-right {
+    color:#000000;
+    background-image:none;
+    width:7%;
+    text-align:center;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    opacity:0.5;
+}
+
+#videoCarousel-left:hover,
+#videoCarousel-right:hover, 
+#videoCarousel-left:focus,
+#videoCarousel-right:focus  
+{
+  opacity:1.0;
+}
+
+#videoCarousel-left {
+  position:absolute;
+  left:0;
+}
+
+#videoCarousel-right {
+  position:absolute;
+  right:0;
+}
+
+/* 動画スライダー本体  */
+#videoCarousel > div.carousel-inner{
+  margin:0 auto;
+  width:100%;
+}
+
+/* サムネイルセレクタ  */
+div.selector_rowdiv {
+    margin-bottom:10px;
+    left:10%;
+    width:100%;
+    height:auto;
+}
+
+div.selector_item {
+    display:inline-block;
+    text-align:center;
+    vertical-align:middle;
+    width:28%;
+    height:auto;
+}
+div.selector_item > img {
+    width:90%;
+    height:auto;
+    cursor:pointer;
+}
+
+div.row-active {
+    visibility:visible;
+}
+
+div.item {
+    text-align:center;
+}
+
+.glyphicon-step-backward,
+.glyphicon-step-forward {
+    display: inline-block;
+    position:absolute;
+    top: 40%;
+    z-index: 5;
+}
+
+.glyphicon-step-backward {
+    left:50%;
+}
+
+.glyphicon-step-forward {
+    right:50%;
+}
+
+#selectorCarousel > .carousel-control {
+    width:5%;
+    background-color:none;
+    background-image:none;
+    color:#000000;
+}
+#selectorCarousel > .carousel-control:hover, 
+#selectorCarousel > .carousel-control:focus {
+  background-color:none;
+  background-image:none;
+}
+#selectorCarousel > .carousel-control.right {
+  right:20;
+}
+.tooltip {
+    position:fixed;
+}
+
+#refresh {
+    /* position:relative; */
+}
+#refreshLink {
+  text-align:center;
+  margin-top:10px;
+}
+
+div.errmessage {
+    text-align:center;
+}
+
+button.refresh {
+  margin:0 auto;
+  margin-bottom:10px;
+  font-size:60%;
+}
+
+div.tags {
+  margin:0 auto;
+  width:100%;
+  text-align:left;
+}
+
+div.tags a {
+  font-size:60%;
+  margin-right:5px;
+  margin-bottom:10px;
+}
+
+video {
+  width:100%;
+  height:auto;
+}
