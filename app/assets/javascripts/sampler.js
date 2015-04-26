@@ -35,6 +35,8 @@ function refreshList() {
                 jQuery.each($tags,function() {
                     $tagsDiv.append('<a href="/sampler/search?keyword='+$(this).text()+'">'+$(this).text()+'</a>');
                 });
+                $descLink = $('<div class="desc"><a href="http://www.dmm.co.jp/litevideo/-/detail/=/cid=' + $movie.find("dmm_id").text() + '/quotto-003">この動画の詳細</a></div>');
+                $videoItem.append($descLink);
                 if(item_number == 0 ) {
                     if(selector_number == 0) {
                         $selectorItem = $('<div class="selector item active">');

@@ -146,6 +146,12 @@ div.tags a {
   margin-right:5px;
 }
 
+div.desc a {
+  font-size:80%;
+  color:red;
+  text-decoration:underline;
+}
+
 #refreshLink {
   position:relative;
   left:-10%;
