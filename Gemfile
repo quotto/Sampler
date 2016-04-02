@@ -36,7 +36,7 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'ruby-debug19', :require => 'ruby-debug'
-gem 'mysql2'
+gem 'mysql2', '~> 0.3.20'
 gem 'nokogiri'
 gem 'rmagick'
 gem 'therubyracer'
