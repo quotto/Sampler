@@ -163,10 +163,11 @@ a.player {
   height:360px;
   margin:0 auto;
 }
-#footer {
+#ad {
+  padding-top:15px;
   text-align:center;
 }
 
-#footer > .ad {
-  padding-top:15px;
+#ad > .ad {
+  padding-bottom:15px;
 }

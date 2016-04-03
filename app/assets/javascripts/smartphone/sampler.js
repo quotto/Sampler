@@ -33,14 +33,37 @@ function refreshList() {
                   $videoInner.append($videoItem);   
                 }
                 $videoItem.append($video);
+                display_value = $videoItem.css("display")
+                $videoItem.css("display","block");
                 $tagsDiv = $('<div class="tags"></div>');
                 $videoItem.append($tagsDiv);
+                $pDiv = $('<p></p>');
+                $tagsDiv.append($pDiv);
+                tags_width = $tagsDiv.width();
+                total_tag_width = 0;
                 $tags = $movie.find('tag')
                 jQuery.each($tags,function() {
-                    $tagsDiv.append('<a href="/sampler/search?keyword='+$(this).text()+'">'+$(this).text()+'</a>');
+                  $tag = $('<a href="/sampler/search?keyword='+$(this).text()+'"><span class="label label-success">'+$(this).text()+'</span></a>')
+                  $pDiv.append($tag);
+                  total_tag_width += $tag.outerWidth(true);
+                  if(total_tag_width > tags_width) {
+                    $tag.remove();
+                    $tagsDiv.append($pDiv);
+                    total_tag_width = 0;
+                    $pDiv = $('<p></p>');
+                    $tagsDiv.append($pDiv);
+                  }
                 });
-                $descLink = $('<div class="desc"><a href="http://www.dmm.co.jp/litevideo/-/detail/=/cid=' + $movie.find("dmm_id").text() + '/quotto-003">この動画の詳細</a></div>');
-                $videoItem.append($descLink);
+                $descLink = $('<a href="http://www.dmm.co.jp/litevideo/-/detail/=/cid=' + $movie.find("dmm_id").text() + '/quotto-003"><span class="label label-danger">この動画の詳細</span></a>');
+                $pDiv.append($descLink);
+                if(total_tag_width > tags_width) {
+                  $descLink.remove();
+                  $tagsDiv.append($pDiv);
+                  total_tag_width = 0;
+                  $pDiv = $('<p></p>');
+                  $tagsDiv.append($pDiv);
+                }
+                $videoItem.css("display","");
                 if(item_number == 0 ) {
                   $selectorRow = $('<div class="selector_row">');
                     if(selector_number == 0) {
@@ -125,4 +148,3 @@ function selectionQuery() {
 function carouselNext() {
     $('#videoCarousel').carousel('next');
 }
-

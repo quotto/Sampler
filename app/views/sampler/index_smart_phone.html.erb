@@ -1,10 +1,11 @@
 <%= render 'header_smart_phone' %>
 <div class="container" id="container">
-  <%= render 'search_form_smartphone' %>
   <div id="query"><%= @query %></div>
   <div id="videoCarousel" class="carousel slide">
     <div class="carousel-inner">
     </div>
+    <a class="left carousel-control" href="#videoCarousel" data-slide="prev"><span class="glyphicon glyphicon-step-backward"></span></a>
+    <a class="right carousel-control" href="#videoCarousel" data-slide="next"><span class="glyphicon glyphicon-step-forward"></span></a>
   </div>
   <div id="refreshLink"><button class="refresh btn btn-default btn-xs" onClick="refreshList()">リストを更新</button></div>
   <div id="selectorCarousel" class="carousel slide">
@@ -15,18 +16,7 @@
     <a class="right carousel-control" href="#selectorCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
   </div>
 </div>
-<div class="ninja_onebutton">
-<script type="text/javascript">
-//<![CDATA[
-(function(d){
-if(typeof(window.NINJA_CO_JP_ONETAG_BUTTON_f467ed8d487977086b187c56c6c65516)=='undefined'){
-    document.write("<sc"+"ript type='text\/javascript' src='http:\/\/omt.shinobi.jp\/b\/f467ed8d487977086b187c56c6c65516'><\/sc"+"ript>");
-}else{
-    window.NINJA_CO_JP_ONETAG_BUTTON_f467ed8d487977086b187c56c6c65516.ONETAGButton_Load();}
-})(document);
-//]]>
-</script><span class="ninja_onebutton_hidden" style="display:none;"></span><span style="display:none;" class="ninja_onebutton_hidden"></span>
-</div>
+<%= render 'footer' %>
 <script type="text/javascript">
   $('.carousel').carousel({
     interval: false

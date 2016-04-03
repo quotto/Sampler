@@ -1,0 +1,11 @@
+<form id="searchform" role="search" action="/sampler/search" method="post">
+  <div class="form-group">
+    <input id="inputFormKeyword" type="text" class="form-control" name="keyword" placeholder="検索ワードを入力" value="<%= @query %>" maxlength="30">
+  </div>
+  <button type="submit" class="btn btn-default btn-sm">検索</button>
+</form>
+<ul class="nav navbar-nav navbar-right">
+  <li>
+    <a id="modalLink" class="showModalLink" data-toggle="modal" data-target="#keywordModal">おすすめワード</a>
+  </li>
+</ul>

@@ -11,4 +11,5 @@
  *= require_self
  *= require bootstrap.min.css
  *= require smartphone/sampler.css
+ *= require sticky-navbar.css
 */

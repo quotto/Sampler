@@ -1,17 +1,30 @@
-<nav class="navbar navbar-default" role="navigation">
+<nav class="navbar navbar-default navbar-fixed-top">
+<div class="container-fluid">
   <div class="navbar-header">
-    <a class="navbar-brand" href="/sampler"><span class="small">DMM Sampler   -DMMのサンプル動画をランダムに検索-</span></a>
+    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-form" arial-expanded="false">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="/sampler">DMM Sampler<span class="hidden-xs small"   -DMMのサンプル動画をランダムに検索-</span></a>
   </div>
+  <div class="collapse navbar-collapse" id="navbar-form">
+    <%= render partial: 'search_navbar_form_smartphone' %>
+  </div>
+</div>
 </nav>
-<!-- <a href="http://b.hatena.ne.jp/entry/sampler.wackwack.net" class="hatena&#45;bookmark&#45;button" data&#45;hatena&#45;bookmark&#45;title="DMM Sampler" data&#45;hatena&#45;bookmark&#45;layout="simple&#45;balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st&#45;hatena.com/images/entry&#45;button/button&#45;only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st&#45;hatena.com/js/bookmark_button.js" charset="utf&#45;8" async="async"></script> -->
-<!-- <div class="fb&#45;like" data&#45;href="https://sampler.wackwack.net" data&#45;width="The pixel width of the plugin" data&#45;height="The pixel height of the plugin" data&#45;colorscheme="light" data&#45;layout="button_count" data&#45;action="like" data&#45;show&#45;faces="true" data&#45;send="false"></div> -->
-<!-- <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter&#45;wjs');</script> -->
-<!-- <a href="https://twitter.com/share" class="twitter&#45;share&#45;button" data&#45;lang="ja">ツイート</a> -->
-<!-- <div id="fb&#45;root"></div> -->
-<!-- <script>(function(d, s, id) { -->
-<!--   var js, fjs = d.getElementsByTagName(s)[0]; -->
-<!--   if (d.getElementById(id)) return; -->
-<!--   js = d.createElement(s); js.id = id; -->
-<!--   js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1"; -->
-<!--   fjs.parentNode.insertBefore(js, fjs); -->
-<!-- }(document, 'script', 'facebook&#45;jssdk'));</script> -->
+
+<div class="modal fade" id="keywordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <span class="modal-title">おすすめワード</span><span class="modal-title-comment">（5秒ごとに更新されます）</span>
+      </div>
+      <div class="modal-body">
+        <button>button</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
