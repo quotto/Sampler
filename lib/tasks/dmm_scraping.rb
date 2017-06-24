@@ -1,7 +1,7 @@
 #encoding ut-8
 #coding utf-8
 require 'nokogiri'
-require 'RMagick'
+require 'rmagick'
 require 'date'
 require 'open-uri'
 require 'net/http'
@@ -22,7 +22,7 @@ class DmmScraping
     @page = 1
      @logger = Logger.new("#{Rails.root}/log/scraping.log",5,10 * 1024 * 1024)
   end
-  
+
   def getPage(url)
     return Nokogiri::HTML(open(url).read)
   end
@@ -32,8 +32,8 @@ class DmmScraping
     res = getPage("http://www.dmm.co.jp/litevideo/-/genre/")
     res_a = res.css("ul.d-boxcollist li a")
     return res_a
-  end 
-  
+  end
+
   def saveMovie(id,title,thumbnail,movie_url)
     movie_param = ActionController::Parameters.new(movie: {dmm_id: id, title: title, thumbnail: thumbnail,movie_url: movie_url})
     newMovie = Movie.new(movie_param[:movie].permit!)
@@ -46,11 +46,11 @@ class DmmScraping
     rescue ActiveRecord::RecordNotUnique => e
       @logger.warn("Not insert movie(duplicate) id:#{id}")
     rescue => e
-        @logger.error("Not insert movie(error) id:#{id} => #{e.inspect}")
+        @logger.error("Not insert movie(error) id:#{id} => #{e.inspect} \n#{e.backtrace.join("\n")}")
     end
   end
-  
-  def saveTag(id,tag_name)    
+
+  def saveTag(id,tag_name)
     tag_param = ActionController::Parameters.new(tag: {dmm_id: id, tag_name: tag_name})
     newTag = Tag.new(tag_param[:tag].permit!)
     begin
@@ -60,10 +60,10 @@ class DmmScraping
         @logger.warn("Not insert tag(duplicate) id:#{id},tag:#{tag_name}")
       end
     rescue => e
-        @logger.warn("Not insert tag(error) id:#{id},tag:#{tag_name} => #{e.inspect}")
+        @logger.warn("Not insert tag(error) id:#{id},tag:#{tag_name} => #{e.inspect}\n#{e.backtrace.join("\n")}")
     end
   end
-  
+
   def scraping
     res = getPage(@url+"page=#{@page}")
     res.css("#list li").each { |item|
@@ -75,7 +75,7 @@ class DmmScraping
 
       begin
         #リンク先からタイトルを取得する
-        purl = URI.parse("http://www.dmm.co.jp/litevideo/-/detail/=/cid=#{id}/");	
+        purl = URI.parse("http://www.dmm.co.jp/litevideo/-/detail/=/cid=#{id}/");
         req = Net::HTTP::Get.new(purl.path)
         response = Net::HTTP.start(purl.host,purl.port) { |http|
           http.request(req);
@@ -84,32 +84,17 @@ class DmmScraping
         title = res_link.css("#page > h1 > span").text
 
         #動画ファイルのURL生成
-        #objectタグのflashvarsパラメータ取得
-        /flashvars.fid = "(.+)"/ =~ res_link.css("body").text
-        fid = $1
-        /flashvars.bid = "(.+)"/ =~ res_link.css("body").text
-        bid = $1
-
-        showBitRate = bid[0,1]
-        bitRate = BITRATE_ID_300K
-        if ((showBitRate.to_i & 1) > 0)
-          bitRate = BITRATE_ID_300K
-        end
-        if ((showBitRate.to_i & 2) > 0)
-          bitRate = BITRATE_ID_1000K
-        end
-        if ((showBitRate.to_i & 4) > 0)
-          bitRate = BITRATE_ID_1500K
-        end
-
-        aspectMark = ""
-        if (bid[1,1] == ASPECT_WIDE_MARK)
-          aspectMark = ASPECT_WIDE_MARK
-        else
-          aspectMark = ASPECT_SINGLE_MARK
-        end
-        mp4_url = MP4_HOSTNAME + fid[0,1] + "/" + fid[0,3] + "/" + fid + "/" + fid + "_" + bitRate + aspectMark + ".mp4"
-
+        movie_url = res_link.css('#player > iframe').attribute('src').value
+    purl = URI.parse("http:#{movie_url}")
+        req = Net::HTTP::Get.new(purl.path)
+        response = Net::HTTP.start(purl.host,purl.port) { |http|
+          http.request(req);
+        }
+    movie_player = Nokogiri::HTML(response.body)
+    src_text = movie_player.css('body').text.force_encoding('UTF-8')
+    utf8_text = src_text.encode('UTF-16BE','UTF-8',:invalid => :replace, :undef => :replace, :replace=>'?').encode('UTF-8')
+    /(\\\/\\\/.+\.mp4)",/ =~ utf8_text
+    mp4_url = "http:#{$1.gsub(/\\/,'')}"
         saveMovie(id,title,thumbnail_url,mp4_url)
 
         #タグの取得
@@ -122,20 +107,20 @@ class DmmScraping
         performers = res_link.css("#performer > a")
         performers.each{|performer|
           a_id = performer.attribute("id")
-          if  a_id == nil 
+          if  a_id == nil
             performer_name = performer.text
             saveTag(id,performer_name)
           end
         }
       rescue => e
-        @logger.error("Error at #{id}:\n#{e}")
+        @logger.error("Error at #{id}:\n#{e}\n#{e.backtrace.join("\n")}")
       end
     }
   end
 
   def executeByRank
     time = DateTime.now
-		@logger.info(sprintf("[%d-%d-%d %d:%d:%d] start scraping(ByRank)",time.year,time.mon,time.mday,time.hour,time.min,time.sec))
+        @logger.info(sprintf("[%d-%d-%d %d:%d:%d] start scraping(ByRank)",time.year,time.mon,time.mday,time.hour,time.min,time.sec))
     res_a = getCategory
     res_a.each{|a|
       #ジャンルごとのキーワードでスクレイピング開始（再生回数順）
@@ -148,10 +133,10 @@ class DmmScraping
     time = DateTime.now
     @logger.info(sprintf("[%d-%d-%d %d:%d:%d] end scraping(ByRank)",time.year,time.mon,time.mday,time.hour,time.min,time.sec))
   end
-  
+
   def executeByDate
     time = DateTime.now
-		@logger.info(sprintf("[%d-%d-%d %d:%d:%d] start scraping(ByDate)",time.year,time.mon,time.mday,time.hour,time.min,time.sec))
+        @logger.info(sprintf("[%d-%d-%d %d:%d:%d] start scraping(ByDate)",time.year,time.mon,time.mday,time.hour,time.min,time.sec))
     res_a = getCategory()
     res_a.each{|a|
       #ジャンルごとのキーワードでスクレイピング開始（再生回数順）
